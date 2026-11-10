@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CodeLab · Lovely Professional University</title>
+<meta name="description" content="CodeLab is the coding practice and lab platform for Lovely Professional University: judged practice problems for Python, data structures and web technologies, with per-test feedback and concept mastery." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='4' fill='%23f58220'/><text x='16' y='23' font-family='Arial' font-size='14' font-weight='bold' fill='%23231f20' text-anchor='middle'>LPU</text></svg>" />
+<link rel="stylesheet" href="assets/styles.css?v=1" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">LPU</div>
+    <div>
+      <div class="brand-name">CodeLab</div>
+      <div class="brand-sub">Lovely Professional University</div>
+    </div>
+  </div>
+
+  <div class="divider" aria-hidden="true"></div>
+
+  <div class="course-picker">
+    <label for="course">Course</label>
+    <select id="course" aria-label="Course"></select>
+  </div>
+
+  <div class="topstats">
+    <div class="stat"><span class="stat-label">Solved</span><span class="stat-value" id="stat-solved">0/15</span></div>
+    <div class="stat"><span class="stat-label">Marks</span><span class="stat-value" id="stat-marks">0</span></div>
+    <div class="stat"><span class="stat-label">Day streak</span><span class="stat-value" id="stat-streak">0</span></div>
+    <div class="stat"><span class="stat-label">Runtime</span><span class="stat-value" id="stat-runtime">starting</span></div>
+    <button class="icon-btn" id="open-progress">Progress</button>
+    <button class="icon-btn" id="open-palette">Jump to <kbd>Ctrl K</kbd></button>
+  </div>
+</header>
+
+<main class="workspace">
+  <aside class="rail" aria-label="Labs">
+    <div class="rail-head">
+      <div class="rail-title">Course</div>
+      <div class="rail-course" id="rail-course">Python Programming</div>
+      <div class="rail-meta" id="rail-meta"></div>
+    </div>
+    <div id="labs"></div>
+    <div class="mastery">
+      <h3>Concept mastery</h3>
+      <div id="mastery"></div>
+    </div>
+  </aside>
+
+  <section class="problem-col" aria-label="Problem">
+    <div class="prob-head">
+      <div class="prob-eyebrow">
+        <span id="prob-lab">Lab</span>
+        <span aria-hidden="true">·</span>
+        <span id="prob-marks">5 marks</span>
+      </div>
+      <h1 class="prob-title" id="prob-title">Problem</h1>
+      <div class="badges" id="prob-badges"></div>
+    </div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" data-tab="statement" aria-selected="true">Statement</button>
+      <button class="tab" role="tab" data-tab="hints" aria-selected="false">Hints</button>
+      <button class="tab" role="tab" data-tab="submissions" aria-selected="false">Submissions</button>
+    </div>
+
+    <div class="panel" id="panel"></div>
+  </section>
+
+  <section class="editor-col" aria-label="Editor and judge">
+    <div class="editor-bar">
+      <span class="lang-pill" id="lang-pill">Python 3</span>
+      <span class="console-status" id="editor-hint">Ctrl+Enter runs the sample tests</span>
+      <span class="spacer"></span>
+      <button class="btn ghost" id="btn-reset" title="Restore the starter code">Reset code</button>
+      <button class="btn" id="btn-run">Run samples <kbd>⌘↵</kbd></button>
+      <button class="btn primary" id="btn-submit">Submit <kbd>⌘⇧↵</kbd></button>
+    </div>
+
+    <div class="code-wrap">
+      <div class="gutter" id="gutter" aria-hidden="true"></div>
+      <div class="code-area">
+        <textarea id="editor" spellcheck="false" autocapitalize="off" autocorrect="off"
+          aria-label="Your solution"></textarea>
+      </div>
+    </div>
+
+    <div class="console">
+      <div class="console-head">
+        <span>Judge</span>
+        <span class="spacer"></span>
+        <span class="console-status" id="judge-status">idle</span>
+      </div>
+      <div class="results" id="results">
+        <p class="empty" id="results-empty">Run the samples to see each test case, or submit to run the hidden tests as well.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<dialog id="progress-dlg">
+  <div class="dlg-head">
+    <h2>Progress and standing</h2>
+    <button class="close-btn" data-close aria-label="Close">×</button>
+  </div>
+  <div class="dlg-body" id="progress-body"></div>
+</dialog>
+
+<dialog id="palette-dlg">
+  <input class="cmd-input" id="palette-input" placeholder="Jump to a problem, or run a command…" aria-label="Command" />
+  <ul class="cmd-list" id="palette-list" role="listbox"></ul>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/problems.js?v=1"></script>
+<script src="assets/judge.js?v=1"></script>
+<script src="assets/app.js?v=1"></script>
+</body>
+</html>

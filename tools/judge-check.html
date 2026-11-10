@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>judge check · starting</title>
+</head>
+<body style="font:14px system-ui;padding:20px">
+<h1>Judge self-check</h1>
+<pre id="log">starting Python runtime…</pre>
+<p>This page is a development harness: it runs known-good and known-bad programs through the
+same judge the app uses, and prints the verdict. It is not part of the student experience.</p>
+
+<script src="../assets/problems.js"></script>
+<script src="../assets/judge.js"></script>
+<script>
+(async function () {
+  const log = document.getElementById('log');
+  const lines = [];
+  const problems = Object.fromEntries(CODELAB_PROBLEMS.map((p) => [p.id, p]));
+
+  const solutions = {
+    'py-registration': 'name = input()\nprogramme = input()\nprint(f"{name} ({programme}) is ready for the Term End Examination.")',
+    'py-even-tally': 'n = int(input())\nvalues = list(map(int, input().split()))[:n]\nevens = [v for v in values if v % 2 == 0]\nprint(sum(evens))\nprint(len(evens))',
+    'py-second-largest': 'n = int(input())\nscores = list(map(int, input().split()))[:n]\nd = sorted(set(scores), reverse=True)\nprint(d[1] if len(d) > 1 else "NA")',
+    'py-word-frequency': 'from collections import Counter\nc = Counter(w.lower() for w in input().split())\nfor w, k in sorted(c.items(), key=lambda kv: (-kv[1], kv[0])):\n    print(f"{w}:{k}")',
+    'py-transpose': 'r, c = map(int, input().split())\ng = [list(map(int, input().split())) for _ in range(r)]\nfor j in range(c):\n    print(" ".join(str(g[i][j]) for i in range(r)))',
+    'py-palindrome': 's = "".join(ch.lower() for ch in input().strip() if ch.isalnum())\nprint("YES" if s == s[::-1] else "NO")',
+    'py-balanced': 'pairs = {")": "(", "]": "[", "}": "{"}\nst = []\nfor ch in input().strip():\n    if ch in "([{":\n        st.append(ch)\n    elif ch in pairs:\n        if not st or st.pop() != pairs[ch]:\n            print("NO")\n            raise SystemExit\nprint("YES" if not st else "NO")',
+    'ds-pair-target': 'n = int(input())\na = list(map(int, input().split()))[:n]\nt = int(input())\ni, j = 0, n - 1\nwhile i < j:\n    s = a[i] + a[j]\n    if s == t:\n        print(i, j)\n        break\n    if s < t:\n        i += 1\n    else:\n        j -= 1\nelse:\n    print("NA")',
+    'ds-rotate': 'n, k = map(int, input().split())\nr = input().split()[:n]\nk %= n\nprint(" ".join(r[-k:] + r[:-k] if k else r))',
+    'ds-next-greater': 'n = int(input())\nv = list(map(int, input().split()))[:n]\nout, st = [-1] * n, []\nfor i in range(n):\n    while st and v[st[-1]] < v[i]:\n        out[st.pop()] = v[i]\n    st.append(i)\nprint(" ".join(map(str, out)))',
+    'ds-queue-two-stacks': 'q = int(input())\nsi, so, out = [], [], []\nfor _ in range(q):\n    op = input().split()\n    if op[0] == "push":\n        si.append(op[1])\n    elif op[0] == "size":\n        out.append(str(len(si) + len(so)))\n    else:\n        if not so:\n            while si:\n                so.append(si.pop())\n        if not so:\n            out.append("EMPTY")\n        else:\n            out.append(so[-1] if op[0] == "front" else so.pop())\nprint("\\n".join(out))',
+    'ds-merge-lists': 'n = int(input())\na = list(map(int, input().split()))[:n]\nm = int(input())\nb = list(map(int, input().split()))[:m]\nout, i, j = [], 0, 0\nwhile i < len(a) and j < len(b):\n    if a[i] <= b[j]:\n        out.append(a[i]); i += 1\n    else:\n        out.append(b[j]); j += 1\nout += a[i:] + b[j:]\nprint(" ".join(map(str, out)))',
+    'ds-bst-traversals': [
+      'import sys',
+      'sys.setrecursionlimit(300)',
+      'n = int(input())',
+      'keys = list(map(int, input().split()))[:n]',
+      'L, R = {}, {}',
+      'def ins(node, k):',
+      '    if node is None:',
+      '        return k',
+      '    if k < node:',
+      '        L[node] = ins(L.get(node), k)',
+      '    else:',
+      '        R[node] = ins(R.get(node), k)',
+      '    return node',
+      'root = None',
+      'for k in keys:',
+      '    root = ins(root, k)',
+      'def inorder(nd, acc):',
+      '    if nd is None:',
+      '        return acc',
+      '    inorder(L.get(nd), acc); acc.append(nd); inorder(R.get(nd), acc)',
+      '    return acc',
+      'def preorder(nd, acc):',
+      '    if nd is None:',
+      '        return acc',
+      '    acc.append(nd); preorder(L.get(nd), acc); preorder(R.get(nd), acc)',
+      '    return acc',
+      'def height(nd):',
+      '    if nd is None:',
+      '        return -1',
+      '    return 1 + max(height(L.get(nd)), height(R.get(nd)))',
+      'print(" ".join(map(str, inorder(root, []))))',
+      'print(" ".join(map(str, preorder(root, []))))',
+      'print(height(root))',
+    ].join('\n'),
+    'web-title-case': 'const line = readLine();\nprint(line.split(" ").map(w => w[0].toUpperCase() + w.slice(1).toLowerCase()).join(" "));',
+    'web-anagrams': [
+      'const n = parseInt(readLine(), 10);',
+      'const words = readLine().split(" ").slice(0, n);',
+      'const groups = new Map();',
+      'for (const w of words) {',
+      '  const key = w.split("").sort().join("");',
+      '  if (!groups.has(key)) groups.set(key, []);',
+      '  groups.get(key).push(w);',
+      '}',
+      'const out = [...groups.values()].map(g => g.sort().join(" ")).sort((a, b) => (a.split(" ")[0] < b.split(" ")[0] ? -1 : 1));',
+      'print(out.join("\\n"));',
+    ].join('\n'),
+  };
+
+  // A program that is deliberately wrong: it prints nothing.
+  const bad = 'pass\n';
+  let passed = 0;
+  let failed = 0;
+
+  async function runCase(problem, code) {
+    const language = problem.id.startsWith('web-') ? 'javascript' : 'python';
+    return Judge.run({ language, code, input: problem.tests[0].input, budgetMs: 45000 });
+  }
+
+  for (const [id, code] of Object.entries(solutions)) {
+    const problem = problems[id];
+    if (!problem) { lines.push('missing problem ' + id); failed += 1; continue; }
+    for (let i = 0; i < problem.tests.length; i += 1) {
+      const test = problem.tests[i];
+      const language = problem.id.startsWith('web-') ? 'javascript' : 'python';
+      // eslint-disable-next-line no-await-in-loop
+      const outcome = await Judge.run({ language, code, input: test.input, budgetMs: 45000 });
+      const ok = !outcome.error && Judge.sameOutput(outcome.stdout, test.expected);
+      if (ok) passed += 1;
+      else {
+        failed += 1;
+        lines.push('FAIL ' + id + ' case ' + (i + 1) + ' :: got ' + JSON.stringify(outcome.stdout) + ' expected ' + JSON.stringify(test.expected) + (outcome.error ? ' error ' + outcome.error.split('\n').pop() : ''));
+      }
+      log.textContent = lines.concat(['progress ' + id + ' case ' + (i + 1)]).join('\n');
+    }
+  }
+
+  // The judge must also reject a wrong program.
+  const reject = await runCase(problems['py-registration'], bad);
+  if (!Judge.sameOutput(reject.stdout, problems['py-registration'].tests[0].expected)) passed += 1;
+  else { failed += 1; lines.push('FAIL the judge accepted a wrong program'); }
+
+  // And it must survive a program that never terminates.
+  const spin = await Judge.run({ language: 'python', code: 'while True:\n    pass\n', input: '', budgetMs: 1500 });
+  if (spin.timeout) passed += 1;
+  else { failed += 1; lines.push('FAIL infinite loop was not stopped'); }
+
+  lines.push('RESULT passed=' + passed + ' failed=' + failed);
+  log.textContent = lines.join('\n');
+  document.title = (failed === 0 ? 'PASS' : 'FAIL') + ' ' + passed + '/' + (passed + failed);
+})();
+</script>
+</body>
+</html>
